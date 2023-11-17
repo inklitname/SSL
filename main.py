@@ -55,16 +55,23 @@ def write_to_database(data):
     conn.close()
 
 
-# Чтение списка хостов и портов из файла
-with open('hosts.txt', 'r') as file:
-    hosts = [line.strip().split(':') for line in file]
+def get_hosts():
+    """Чтение списка хостов и портов из файла"""
+    with open('hosts.txt', 'r') as file:
+        hosts = [line.strip().split(':') for line in file]
+    return hosts
 
-# Получение данных и запись в базу
-result_data = []
-for host, port in hosts:
-    ssl_version = get_ssl_version(host, int(port))
-    ssl_domains = get_ssl_domains(host, int(port))
-    result_data.append((host, int(port), ssl_version, ', '.join(ssl_domains)))
+
+def init_ssl():
+    """Формирование данных"""
+    result_data=[]
+    for host, port in get_hosts():
+        ssl_version = get_ssl_version(host, int(port))
+        ssl_domains = get_ssl_domains(host, int(port))
+        result_data.append((host, int(port), ssl_version, ', '.join(ssl_domains)))
+    return result_data
+
 
 if __name__ == "__main__":
+    result_data = init_ssl()
     write_to_database(result_data)
